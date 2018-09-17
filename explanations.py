@@ -33,6 +33,7 @@ class RISE(nn.Module):
         self.masks = torch.from_numpy(self.masks).float()
         self.masks = self.masks.cuda()
         self.N = N
+        self.p1 = p1
 
     def load_masks(self, filepath):
         self.masks = np.load(filepath)
@@ -54,7 +55,7 @@ class RISE(nn.Module):
         CL = p.size(1)
         sal = torch.matmul(p.data.transpose(0, 1), self.masks.view(N, H * W))
         sal = sal.view((CL, H, W))
-        sal /= N
+        sal = sal / N / self.p1
         return sal
     
     
