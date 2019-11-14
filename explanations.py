@@ -11,8 +11,13 @@ class RISE(nn.Module):
         self.model = model
         self.input_size = input_size
         self.gpu_batch = gpu_batch
-
+    
     def generate_masks(self, N, s, p1, savepath='masks.npy'):
+        
+        ''' N is the number of masks used, 
+        (s, s) is the size of the smaller square binary masks, 
+        p is the probability of each pixel in the smaller masks being set to 1.'''
+        
         cell_size = np.ceil(np.array(self.input_size) / s)
         up_size = (s + 1) * cell_size
 
