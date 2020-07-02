@@ -10,14 +10,16 @@ from PIL import Image
 class Dummy():
     pass
 
+# Normalization params for Imagenet
+means = [0.485, 0.456, 0.406]
+stds  = [0.229, 0.224, 0.225]
 
 # Function that opens image from disk, normalizes it and converts to tensor
 read_tensor = transforms.Compose([
     lambda x: Image.open(x),
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                          std=[0.229, 0.224, 0.225]),
+    transforms.Normalize(means, stds),
     lambda x: torch.unsqueeze(x, 0)
 ])
 
@@ -26,10 +28,7 @@ read_tensor = transforms.Compose([
 def tensor_imshow(inp, title=None, **kwargs):
     """Imshow for Tensor."""
     inp = inp.numpy().transpose((1, 2, 0))
-    # Mean and std for ImageNet
-    mean = np.array([0.485, 0.456, 0.406])
-    std = np.array([0.229, 0.224, 0.225])
-    inp = std * inp + mean
+    inp = stds * inp + means
     inp = np.clip(inp, 0, 1)
     plt.imshow(inp, **kwargs)
     if title is not None:
@@ -46,9 +45,7 @@ def get_class_name(c):
 preprocess = transforms.Compose([
                 transforms.Resize((224, 224)),
                 transforms.ToTensor(),
-                # Normalization for ImageNet
-                transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225]),
+                transforms.Normalize(means, stds)
             ])
 
 
